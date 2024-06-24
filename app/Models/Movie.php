@@ -9,7 +9,7 @@ class Movie extends Model
 {
     use HasFactory;
 
-    function reviews(){
+    public function reviews(){
         return $this->hasMany(Review::class);
     }
 }
