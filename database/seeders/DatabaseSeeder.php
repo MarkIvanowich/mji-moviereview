@@ -16,15 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Movie::factory()->count(24)->create()->each(function (Movie $movie) {
+        Movie::factory(24)->create()->each(function (Movie $movie) {
             $numReviews = random_int(5, 30);
             Review::factory()->count($numReviews)->make_review_spectrum(5)->for($movie)->create();
         });
-        Movie::factory()->count(69)->create()->each(function (Movie $movie) {
+        Movie::factory(69)->create()->each(function (Movie $movie) {
             $numReviews = random_int(5, 30);
             Review::factory()->count($numReviews)->make_review_spectrum(4)->for($movie)->create();
         });
-        Movie::factory()->count(10)->create()->each(function (Movie $movie) {
+        Movie::factory(10)->create()->each(function (Movie $movie) {
             $numReviews = random_int(5, 30);
             Review::factory()->count($numReviews)->make_review_spectrum(1)->for($movie)->create();
         });

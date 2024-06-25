@@ -9,7 +9,10 @@ class Movie extends Model
 {
     use HasFactory;
 
-    public function reviews(){
+    protected $fillable = ['title', 'producer'];
+
+    public function reviews()
+    {
         return $this->hasMany(Review::class);
     }
 }
