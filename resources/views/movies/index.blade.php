@@ -23,7 +23,7 @@
         @endphp
 
         @foreach ($filters as $key => $label)
-            <a href="{{ route('movies.index', [...request()->query(), 'filter' => $key]) }}"
+            <a href="{{ route('movies.index', [...request()->query(), 'filter' => $key]) }}" {{-- [...request() is something new to php8. VERY USEFUL! --}}
                class="{{ request('filter') === $key || (request('filter') === null && $key === '') ? 'filter-item-active' : 'filter-item' }}">
                 {{ $label }}
             </a>
