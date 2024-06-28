@@ -18,7 +18,7 @@ class MovieFactory extends Factory
     {
         return [
             'title' => fake()->sentence(3),
-            'producer' => fake()->name,
+            'director' => fake()->name,
             'created_at' => fake()->dateTimeBetween('-2 years'),
             'updated_at' => function (array $attributes) {
                 return fake()->dateTimeBetween($attributes['created_at'], 'now');
