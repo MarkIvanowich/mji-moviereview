@@ -18,6 +18,22 @@ class Movie extends Model
         return $this->hasMany(Review::class);
     }
 
+    // TODO: Remove unused parameters
+    public function scopeWithReviewsCount(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    {
+        return $query->withCount([
+                                     'reviews' => fn(Builder $q) => $this->dateRangeLimiter($q, $from, $to)
+                                 ]);
+    }
+
+    public function scopeWithAvgRating(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    {
+        return $query->withAvg([
+                                   'reviews' => fn(Builder $q) => $this->dateRangeLimiter($q, $from, $to)
+                               ], 'rating');
+    }
+
+
     /*
      * Local query scopes are not something I've ever done before.
      * Look at me learning! 2024-06-24
@@ -46,7 +62,6 @@ class Movie extends Model
         return $query->having('reviews_count', '>=', $minReviews);
     }
 
-
     private function dateRangeLimiter(Builder $internalquery, $from = null, $to = null)
     {
         if ($from && !$to) {
@@ -55,10 +70,11 @@ class Movie extends Model
         } elseif (!$from && $to) {
             // to but no from
             $internalquery->where('created_at', '<=', $to);
-        } else {
-            // from and to
+        } elseif ($from && $to) {
+            // with both from and to
             $internalquery->whereBetween('created_at', [$from, $to]);
         }
+        //else with neither
     }
 
     public function scopePopularLastMonth(Builder $query): Builder|QueryBuilder

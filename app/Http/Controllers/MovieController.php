@@ -13,9 +13,20 @@ class MovieController extends Controller
     public function index(Request $request)
     {
         $title = $request->input('title');
+        $filter = $request->input('filter');
+
         $movies = Movie::when($title, function ($query, $title) {
             $query->title($title); // Model::scopeTitle
-        })->get();
+        });
+        $movies = match($filter){ //switch
+            'popular_last_month' => $movies->popularLastMonth(),
+            'popular_last_6months' => $movies->popularLast6Months(),
+            'highest_rated_last_month' => $movies->highestRatedLastMonth(),
+            'highest_rated_last_6months' => $movies->highestRatedLast6Months(),
+            default => $movies->latest()->withAvgRating()->withReviewsCount()
+        };
+
+        $movies = $movies->get();
         return view('movies.index', compact('movies', 'title'));
     }
 
@@ -38,9 +49,9 @@ class MovieController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Movie $movie)
     {
-        //
+        return view('movies.show', compact('movie'));
     }
 
     /**
