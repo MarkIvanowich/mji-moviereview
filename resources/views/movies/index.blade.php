@@ -42,10 +42,10 @@
                         </div>
                         <div>
                             <div class="movie-rating">
-                                <x-star-rating :rating="$movie->reviews_avg_rating"/>
+                                <x-star-rating :rating="$movie->all_reviews_rating"/>
                             </div>
                             <div class="movie-review-count">
-                                out of {{ $movie->reviews_count?:"zero" }} {{ Str::plural('review', $movie->reviews_count) }}
+                                out of {{ $movie->all_reviews_count?:"zero" }} {{ Str::plural('review', $movie->all_reviews_count) }}
                             </div>
                         </div>
                     </div>

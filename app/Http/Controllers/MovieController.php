@@ -18,15 +18,17 @@ class MovieController extends Controller
         $movies = Movie::when($title, function ($query, $title) {
             $query->title($title); // Model::scopeTitle
         });
-        $movies = match($filter){ //switch
+        $movies = match ($filter) { //switch
             'popular_last_month' => $movies->popularLastMonth(),
             'popular_last_6months' => $movies->popularLast6Months(),
             'highest_rated_last_month' => $movies->highestRatedLastMonth(),
             'highest_rated_last_6months' => $movies->highestRatedLast6Months(),
-            default => $movies->latest()->withAvgRating()->withReviewsCount()
+            default => $movies->latest()
         };
 
-        $movies = $movies->get();
+        $movies = $movies->withTotalAvgRating()->withTotalReviewsCount()->get();
+        // places the total number and average ratings of all reviews in the eloquent model untouched by the filters
+
         return view('movies.index', compact('movies', 'title'));
     }
 
@@ -49,8 +51,9 @@ class MovieController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Movie $movie)
+    public function show(int $id)
     {
+        $movie = Movie::with('reviews')->withTotalAvgRating()->withTotalReviewsCount()->findOrFail($id);
         return view('movies.show', compact('movie'));
     }
 

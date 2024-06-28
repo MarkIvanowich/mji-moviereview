@@ -8,10 +8,10 @@
       <div class="movie-director mb-4 text-lg font-semibold">by {{ $movie->director }}</div>
       <div class="movie-rating flex items-center">
         <div class="mr-2 text-sm font-medium text-slate-700">
-          <x-star-rating :rating="$movie->reviews_avg_rating" />
+          <x-star-rating :rating="$movie->all_reviews_rating" />
         </div>
         <span class="movie-review-count text-sm text-gray-500">
-          {{ $movie->reviews_count }} {{ Str::plural('review', $movie->reviews_count) }}
+          {{ $movie->all_reviews_count }} {{ Str::plural('review', $movie->all_reviews_count) }}
         </span>
       </div>
     </div>

@@ -18,19 +18,17 @@ class Movie extends Model
         return $this->hasMany(Review::class);
     }
 
-    // TODO: Remove unused parameters
-    public function scopeWithReviewsCount(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    /*
+     *  This function never uses the $from or $to paramters, so the DateRangeLimiter was useless
+     */
+    public function scopeWithTotalReviewsCount(Builder $query): Builder|QueryBuilder
     {
-        return $query->withCount([
-                                     'reviews' => fn(Builder $q) => $this->dateRangeLimiter($q, $from, $to)
-                                 ]);
+        return $query->withCount('reviews as all_reviews_count');
     }
 
-    public function scopeWithAvgRating(Builder $query, $from = null, $to = null): Builder|QueryBuilder
+    public function scopeWithTotalAvgRating(Builder $query): Builder|QueryBuilder
     {
-        return $query->withAvg([
-                                   'reviews' => fn(Builder $q) => $this->dateRangeLimiter($q, $from, $to)
-                               ], 'rating');
+        return $query->withAvg('reviews as all_reviews_rating', 'rating');
     }
 
 
