@@ -26,8 +26,15 @@ class MovieController extends Controller
             default => $movies->latest()
         };
 
-        $movies = $movies->withTotalAvgRating()->withTotalReviewsCount()->get();
-        // places the total number and average ratings of all reviews in the eloquent model untouched by the filters
+        $cache_key = 'movies:' . $filter . ":" . $title;
+        $movies = cache()->remember(
+            $cache_key,
+            3600,
+            function () use ($movies) {
+                return $movies->withTotalAvgRating()->withTotalReviewsCount()->get();
+                // places the total number and average ratings of all reviews in the eloquent model untouched by the filters
+            }
+        );
 
         return view('movies.index', compact('movies', 'title'));
     }
@@ -50,10 +57,19 @@ class MovieController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * I have to do this differently from the instructor yet again.
+     * The withTotal... methods add on to the generated query. Model Binding leads cache() to assume I'm trying to cache the query (PDO)
      */
     public function show(int $id)
     {
-        $movie = Movie::with('reviews')->withTotalAvgRating()->withTotalReviewsCount()->findOrFail($id);
+        $cache_key = 'movies:' . $id;
+        $movie = cache()->remember($cache_key, 3600, function () use ($id) {
+            return Movie::with(['reviews' => fn($q) => $q->latest()])
+                ->withTotalAvgRating()
+                ->withTotalReviewsCount()
+                ->findOrFail($id);
+        });
         return view('movies.show', compact('movie'));
     }
 
