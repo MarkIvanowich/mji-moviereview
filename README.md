@@ -10,4 +10,4 @@ I want to show that I'm not copying the code verbatim.
 
 There are a few key differences with my version vs the instructors. One of which is my preference to show both the filtered and the total ratings simultaneously.
 
-![Screenshot of MJI Movie Review](Screenshot from 2024-06-30 23-22-56.png)
+![Screenshot of MJI Movie Review](Screenshot%20from%202024-06-30%2023-22-56.png)
