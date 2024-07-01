@@ -24,7 +24,7 @@
 
         @foreach ($filters as $key => $label)
             <a href="{{ route('movies.index', [...request()->query(), 'filter' => $key]) }}" {{-- [...request() is something new to php8. VERY USEFUL! --}}
-               class="{{ request('filter') === $key || (request('filter') === null && $key === '') ? 'filter-item-active' : 'filter-item' }}">
+            class="{{ request('filter') === $key || (request('filter') === null && $key === '') ? 'filter-item-active' : 'filter-item' }}">
                 {{ $label }}
             </a>
         @endforeach
@@ -35,17 +35,36 @@
             <li class="mb-4">
                 <div class="movie-item">
                     <div
-                        class="flex flex-wrap items-center justify-between">
+                            class="flex flex-wrap items-center justify-between">
                         <div class="w-full flex-grow sm:w-auto">
                             <a href="{{ route('movies.show', $movie) }}" class="movie-title">{{ $movie->title }}</a>
                             <span class="movie-director">directed by {{ $movie->director }}</span>
                         </div>
-                        <div>
+                        @if($movie->reviews_count)
+                            {{-- Only shows when filtering --}}
+                            <div class="mr-5">
+                                <div class="movie-rating">
+                                    <x-star-rating :rating="$movie->reviews_avg_rating"/>
+                                </div>
+                                <div class="movie-review-count">
+                                    out of {{$movie->reviews_count}} {{ Str::plural('review', $movie->reviews_count) }}
+                                </div>
+                            </div>
+                        @endif
+                        <div class="">
+                            {{--
+                            Always shows, filtering or not.
+                            ~
+                            $unqiue_filtered represents the case where the user has a filter turned on AND the number of filtered reviews is different than the total reviews. Essentially we want to avoid repeating ourselves: "x of y reviews... x out of y all time"
+                            --}}
+                            @php($unique_filtered = $movie->all_reviews_count!=$movie->reviews_count&&$movie->reviews_count)
                             <div class="movie-rating">
                                 <x-star-rating :rating="$movie->all_reviews_rating"/>
                             </div>
                             <div class="movie-review-count">
-                                out of {{ $movie->all_reviews_count?:"zero" }} {{ Str::plural('review', $movie->all_reviews_count) }}
+                                {{$unique_filtered?"of":"out of"}}{{----}}
+                                {{$movie->all_reviews_count?:"zero" }}
+                                {{$unique_filtered?"all-time":Str::plural('review', $movie->all_reviews_count)}}
                             </div>
                         </div>
                     </div>
